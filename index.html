@@ -2,18 +2,133 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
+    <title>Complaints</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <style>
+      html, body{
+        padding: none;
+        margin: 0px;
+      }
+
+      .main{
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      #_1,#_2,#_3,#_4{
+        display: none;
+        width: 100vw;
+        height: 100vh;
+        padding-left: 50px;
+        padding-right: 50px;
+        padding-top: 120px;
+      }
+
+      #preloader{
+        background: white;
+      }
+
+      #preloader_logo, #_1_form{
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%,-50%);
+      }
+
+      #header{
+        display: none;
+        width: 100vw;
+        color: white;
+      }
+    </style>
   </head>
   <body>
-    <h1>Hello World!</h1>
-    <!-- All of the Node.js APIs are available in this renderer process. -->
-    We are using Node.js <script>document.write(process.versions.node)</script>,
-    Chromium <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
+      <div id="preloader" class="main container-fluid">
+        <div id="preloader_logo">
+          <img src="img/logo.png">
+        </div>
+      </div>
 
-    <script>
-      // You can also require other files to run in this process
-      require('./renderer.js')
-    </script>
+      <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light shadow p-3 mb-5" id="header">
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+        <a class="navbar-brand" href="#">
+          <img src="img/logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
+            mwpf
+        </a>
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" href="#">Disabled</a>
+          </li>
+        </ul>
+        <div class="my-2 my-lg-0">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">sign out</button>
+        </div>
+      </div>
+      </nav>
+
+      <div id="_1" class="main container-fluid">
+        <div id="_1_form" class="form">
+          <div id="_1_message">
+          </div>
+          <br>
+          <input type="passsword" class="form-control" id="" placeholder="password">
+          <br>
+          <button type="button" class="btn btn-primary" id="btn_sign_in">Sign In</button>
+        </div>
+      </div>
+
+      <div id="_2" class="main container-fluid">
+        <div class="row">
+          <div class="card" style="width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title">View All complaints</h5>
+              <p class="card-text" id="_2_number"></p>
+              <!--<a href="#" class="btn btn-primary">Go somewhere</a>-->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="_3" class="main container-fluid">
+      </div>
+
+      <div id="_4" class="main container-fluid">
+      </div>
   </body>
+  <script>require('./renderer.js')</script>
+  <script>window.$ = window.jQuery = require('./js/jquery.js');</script>
+  <script>window.$ = window.jQuery = require('./js/bootstrap.js');</script>
+  <script>
+    var request = require('request');
+
+    $("#btn_sign_in").click(function(){
+      $("#_1").hide();
+      $("#header").show();
+      $("#_2").show();
+      get_complaints_number();
+    });
+
+    function get_complaints_number(){
+      request.post('http://mwpf.co.za/v_2018_2/php/complaints.php', {form:{action:'get_complaints'}},function (error, response, body) {
+        //console.log('error:', error); // Print the error if one occurred
+        //console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+        $("#_2_number").html(body); // Print the HTML for the Google homepage.
+      });
+    }
+
+    function load(){
+      $("#preloader").hide();
+      $("#_1").show();
+    }
+
+    load();
+  </script>
 </html>
