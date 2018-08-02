@@ -8,6 +8,12 @@
       html, body{
         padding: none;
         margin: 0px;
+        -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none;
+            user-select: none;
       }
 
       .main{
@@ -42,6 +48,16 @@
         width: 100vw;
         color: white;
       }
+
+      #_2_view_all{
+        display: none;
+      }
+
+      #_1_exit{
+        position: fixed;
+        right: 2%;
+        top: 2%;
+      }
     </style>
   </head>
   <body>
@@ -58,7 +74,7 @@
             mwpf
         </a>
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-          <li class="nav-item active">
+          <!--<li class="nav-item active">
             <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item">
@@ -66,16 +82,20 @@
           </li>
           <li class="nav-item">
             <a class="nav-link disabled" href="#">Disabled</a>
-          </li>
+          </li>-->
         </ul>
         <div class="my-2 my-lg-0">
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">sign out</button>
+          <button id="exit" class="btn btn-outline-success my-2 my-sm-0" type="submit">sign out & exit</button>
         </div>
       </div>
       </nav>
 
       <div id="_1" class="main container-fluid">
+        <button id="_1_exit" class="btn btn-outline-success my-2 my-sm-0" type="submit">exit</button>
         <div id="_1_form" class="form">
+          <div id="_1_logo">
+            <img src="img/logo.png"  width="150px">
+          </div>
           <div id="_1_message">
           </div>
           <br>
@@ -89,11 +109,16 @@
         <div class="row">
           <div class="card" style="width: 18rem;">
             <div class="card-body">
-              <h5 class="card-title">View All complaints</h5>
-              <p class="card-text" id="_2_number"></p>
-              <!--<a href="#" class="btn btn-primary">Go somewhere</a>-->
+              <h5  id="_2_number" class="card-title"><div class='alert alert-primary' role='alert'>loading</div></h5>
+              <div class="card-text" id="_2_number"></div>
+              <button id="_2_view_all" class="btn btn-primary">View All Complaints</button>
             </div>
           </div>
+        </div>
+        <br>
+        <br>
+        <div class="row" id="list">
+
         </div>
       </div>
 
@@ -114,13 +139,37 @@
       $("#header").show();
       $("#_2").show();
       get_complaints_number();
+      get_all_complaints_number();
     });
+
+    $("#_2_view_all").click(function(){
+      $("#_2").hide();
+      $("#_3").show();
+    });
+
+    $("#_1_exit").click(function(){
+      exit();
+    })
+
+    $("#exit").click(function(){
+      exit();
+    });
+
+    function get_all_complaints_number(){
+      request.post('http://mwpf.co.za/v_2018_2/php/complaints.php', {form:{action:'get_complaints'}},function (error, response, body) {
+        //console.log('error:', error); // Print the error if one occurred
+        //console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+        $("#list").html(body); // Print the HTML for the Google homepage.
+        //$("#_2_view_all").show();
+      });
+    }
 
     function get_complaints_number(){
       request.post('http://mwpf.co.za/v_2018_2/php/complaints.php', {form:{action:'get_complaints'}},function (error, response, body) {
         //console.log('error:', error); // Print the error if one occurred
         //console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-        $("#_2_number").html(body); // Print the HTML for the Google homepage.
+        $("#_2_number").html("Total number of complaints: "+body); // Print the HTML for the Google homepage.
+        $("#_2_view_all").show();
       });
     }
 
@@ -129,6 +178,19 @@
       $("#_1").show();
     }
 
+    function exit(){
+      window.close();
+    }
+
+    function loop(){
+      window.setInterval(function(){
+        get_complaints_number();
+        get_all_complaints_number();
+      }, 10000);
+    }
+
     load();
+
+
   </script>
 </html>
